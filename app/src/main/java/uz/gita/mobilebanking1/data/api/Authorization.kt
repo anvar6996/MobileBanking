@@ -28,5 +28,5 @@ interface Authorization {
     suspend fun register(@Body data: VeryfyRequest): Response<RegisterResponse>
 
     @POST("/api/v1/auth/verify")
-    fun veryfyCode(@Body data: SmsVeryfyRequest): Response<VeriyfyResponce>
+    suspend fun veryfyCode(@Body data: SmsVeryfyRequest): Response<VeriyfyResponce>
 }

@@ -12,7 +12,7 @@ import uz.gita.mobilebanking1.presentation.utils.timber
 
 object ApiClient {
 
-    val retrofit: Retrofit = Retrofit.Builder().baseUrl("http://4fd6-188-113-199-131.ngrok.io")
+    val retrofit: Retrofit = Retrofit.Builder().baseUrl("http://5806-82-215-103-2.ngrok.io")
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(CoroutineCallAdapterFactory()).client(getHttpClient()).build()
 

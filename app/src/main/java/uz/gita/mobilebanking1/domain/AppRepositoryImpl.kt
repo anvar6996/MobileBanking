@@ -1,5 +1,6 @@
 package uz.gita.mobilebanking1.domain
 
+import android.util.Log
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -59,7 +60,7 @@ class AppRepositoryImpl @Inject constructor() : AppRepository {
             if (response.code() in 200..299) {
                 timber("body = ${response.body()}")
                 response.body()?.let {
-                    pref.phoneNumber = it.message
+                    pref.phoneNumber = request.phone!!
                     pref.startScreen = StartScreenEnum.SMS_VERYFY
                 }
                 emit(Result.success(response.body()!!.message))
@@ -81,26 +82,24 @@ class AppRepositoryImpl @Inject constructor() : AppRepository {
     override fun sendSmsVeryfy(request: SmsVeryfyRequest): Flow<Result<Unit>> = flow {
         try {
             val responce = api.veryfyCode(request)
-            timber("sms responce code->${request.phoneNumber}")
-            timber("sms responce code->${request.password}")
             if (responce.code() in 200..299) {
                 timber("sms responce body = ${responce.body()}")
                 responce.body()?.let {
-                    pref.token = it.token.substring(7)
+                    pref.token = it.message.substring(7)
                     pref.startScreen = StartScreenEnum.MAIN
                 }
                 emit(Result.success(Unit))
             } else {
-                var st = "Serverga ulanishda xatolik bo'ldi else"
+                var st = "Serverga ulanishda xatolik bo'ldi"
                 timber("error = ${responce.errorBody()}")
                 responce.errorBody()?.let {
                     st = gson.fromJson(it.toString(), Erroresponse::class.java).message
                 }
                 emit(Result.failure<Unit>(Throwable(st)))
             }
-        } catch (exc: java.lang.Exception) {
-            emit(Result.failure(Throwable(exc.message)))
-            timber(exc.message.toString())
+        } catch (e: Exception) {
+            emit(Result.failure(Throwable(e.message)))
+            Log.d("TTT",e.message.toString())
         }
     }.flowOn(Dispatchers.IO)
 }
